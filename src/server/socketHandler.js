@@ -26,4 +26,12 @@ export default (io, states) => socket => {
     currentText.likes += 1;
     io.emit('broadcastState', states);
   });
+
+  socket.on('deleteMsg', msg => {
+    const currentText = states.find(item => item.text === msg.text);
+    if (socket.id === currentText.id) {
+      states = states.filter(item => item.text !== msg.text);
+      io.emit('broadcastState', states);
+    }
+  });
 };

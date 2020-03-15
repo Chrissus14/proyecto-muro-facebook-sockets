@@ -21,8 +21,10 @@ export default socketClient => {
     socketClient.emit('sendLike', like);
   };
 
-  const sendDelete = id => {
-    console.log(id);
+  const sendDelete = (id, text) => {
+    const msg = { id: id, text: text };
+    console.log(msg);
+    socketClient.emit('deleteMsg', msg);
   };
 
   return {
