@@ -4,6 +4,7 @@ export default socketClient => {
   const states = document.getElementById('states');
   const userName = document.getElementById('username');
   const changeUserName = document.getElementById('change-username');
+  const allStates = document.getElementById('all-states');
 
   sendState.addEventListener('click', () => {
     console.log('sendState', stateText.value);
@@ -15,17 +16,21 @@ export default socketClient => {
     socketClient.emit('change_username', { username: userName.value });
   });
 
-  const sendLike = id => {
-    console.log(id);
+  const sendLike = text => {
+    const like = { message: text };
+    socketClient.emit('sendLike', like);
   };
 
-  const sendDelete = id => {
-    console.log(id);
+  const sendDelete = (id, text) => {
+    const msg = { id: id, text: text };
+    console.log(msg);
+    socketClient.emit('deleteMsg', msg);
   };
 
   return {
     sendLike,
     sendDelete,
-    states
+    states,
+    allStates
   };
 };

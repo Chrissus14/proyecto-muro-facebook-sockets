@@ -1,19 +1,37 @@
-export default io => socket => {
+export default (io, states) => socket => {
   console.log('start sockets');
   let username = 'Anonymuos';
+
+  if (states.length > 0) io.emit('broadcastState', states);
 
   socket.on('sendState', text => {
     console.log(text);
     const data = {
       text,
       id: socket.id,
-      username
+      username,
+      likes: 0
     };
-    io.emit('broadcastState', data);
+    states.push(data);
+    io.emit('broadcastState', states);
   });
 
   socket.on('change_username', data => {
     // console.log(data.username);
     username = data.username;
+  });
+
+  socket.on('sendLike', like => {
+    const currentText = states.find(item => item.text === like.message);
+    currentText.likes += 1;
+    io.emit('broadcastState', states);
+  });
+
+  socket.on('deleteMsg', msg => {
+    const currentText = states.find(item => item.text === msg.text);
+    if (socket.id === currentText.id) {
+      states = states.filter(item => item.text !== msg.text);
+      io.emit('broadcastState', states);
+    }
   });
 };

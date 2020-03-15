@@ -8,6 +8,9 @@ app.use(express.static('dist'));
 app.set('views', './src/server/views');
 app.set('view engine', 'pug');
 
+// Variables globales
+const states = [];
+
 app.get('/', (req, res) => {
   res.render('home');
 });
@@ -19,4 +22,4 @@ const server = app.listen(3000, (req, res) => {
 const io = socketio(server);
 
 io.set('transports', ['websockets', 'polling']);
-io.on('connection', socketHandler(io));
+io.on('connection', socketHandler(io, states));
