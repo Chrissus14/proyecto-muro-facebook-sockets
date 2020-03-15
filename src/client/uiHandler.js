@@ -4,6 +4,7 @@ export default socketClient => {
   const states = document.getElementById('states');
   const userName = document.getElementById('username');
   const changeUserName = document.getElementById('change-username');
+  const allStates = document.getElementById('all-states');
 
   sendState.addEventListener('click', () => {
     console.log('sendState', stateText.value);
@@ -26,6 +27,7 @@ export default socketClient => {
   return {
     sendLike,
     sendDelete,
-    states
+    states,
+    allStates
   };
 };
