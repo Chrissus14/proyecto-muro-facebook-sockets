@@ -20,4 +20,10 @@ export default (io, states) => socket => {
     // console.log(data.username);
     username = data.username;
   });
+
+  socket.on('sendLike', like => {
+    const currentText = states.find(item => item.text === like.message);
+    currentText.likes += 1;
+    io.emit('broadcastState', states);
+  });
 };

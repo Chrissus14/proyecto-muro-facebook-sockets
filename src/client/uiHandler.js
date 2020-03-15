@@ -16,8 +16,9 @@ export default socketClient => {
     socketClient.emit('change_username', { username: userName.value });
   });
 
-  const sendLike = id => {
-    console.log(id);
+  const sendLike = text => {
+    const like = { message: text };
+    socketClient.emit('sendLike', like);
   };
 
   const sendDelete = id => {

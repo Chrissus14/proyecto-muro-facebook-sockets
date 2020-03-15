@@ -14,7 +14,7 @@ export default (socketClient, ui) => {
         <div>
           <p>${item.username} - ${item.text}</p>
           <p>likes ${item.likes}</p>
-          <button onClick="window.ui.sendLike('${item.id}')">Like</button>
+          <button onClick="window.ui.sendLike('${item.text}')">Like</button>
            <button onClick="window.ui.sendDelete('${item.id}')">Delete</button>
         </div>
       `;
