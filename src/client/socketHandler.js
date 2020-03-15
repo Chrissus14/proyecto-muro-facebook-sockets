@@ -3,8 +3,9 @@ export default (socketClient, ui) => {
     console.log('broadcastState', data);
     ui.states.innerHTML += `
       <div>
-        <p>${data.text}</p>
+        <p>${data.username} - ${data.text}</p>
         <button onClick="window.ui.sendLike('${data.id}')">Like</button>
+        <button onClick="window.ui.sendDelete('${data.id}')">Delete</button>
       </div>
     `;
   });

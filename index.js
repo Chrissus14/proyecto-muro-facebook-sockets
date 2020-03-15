@@ -18,5 +18,5 @@ const server = app.listen(3000, (req, res) => {
 
 const io = socketio(server);
 
-io.set('transport', ['websockets', 'polling']);
+io.set('transports', ['websockets', 'polling']);
 io.on('connection', socketHandler(io));
