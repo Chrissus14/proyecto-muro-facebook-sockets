@@ -1,8 +1,34 @@
+import connection from './connection';
+import { matchHash, createToken } from './hasher';
+
 export default (io, states) => socket => {
   console.log('start sockets');
   let username = 'Anonymuos';
 
   if (states.length > 0) io.emit('broadcastState', states);
+
+  socket.on('doLogin', data => {
+    console.log(data);
+
+    connection.query('SELECT * FROM users WHERE userName = ?', [data.user], (err, result) => {
+      if (!err) {
+        if (result.length === 1) {
+          if (matchHash(data.password, result[0].pass)) {
+            const token = createToken({
+              user: data.user
+            });
+            io.emit('successLogin', token);
+          } else {
+            io.emit('failedLogin', 'invalid credentials');
+          }
+        } else {
+          io.emit('failedLogin', 'user not found');
+        }
+      } else {
+        io.emit('failedLogin', err.message);
+      }
+    });
+  });
 
   socket.on('sendState', text => {
     console.log(text);

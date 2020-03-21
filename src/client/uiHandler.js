@@ -5,10 +5,35 @@ export default socketClient => {
   const userName = document.getElementById('username');
   const changeUserName = document.getElementById('change-username');
   const allStates = document.getElementById('all-states');
+  const loginForm = document.getElementById('login');
+  const wall = document.getElementById('wall');
+  const user = document.getElementById('user');
+  const password = document.getElementById('password');
+  const doLogin = document.getElementById('do-login');
+
+  wall.style.display = 'none';
+
+  const clientData = {
+    token: ''
+  };
+
+  function updateClientData(token) {
+    console.log(2, token);
+    clientData.token = token;
+  }
 
   sendState.addEventListener('click', () => {
     console.log('sendState', stateText.value);
     if (stateText.value.length > 0) socketClient.emit('sendState', stateText.value);
+  });
+
+  doLogin.addEventListener('click', () => {
+    if (user.value.length > 0 && password.value.length > 0) {
+      socketClient.emit('doLogin', {
+        user: user.value,
+        password: password.value
+      });
+    }
   });
 
   changeUserName.addEventListener('click', () => {
@@ -28,9 +53,12 @@ export default socketClient => {
   };
 
   return {
+    updateClientData,
     sendLike,
     sendDelete,
     states,
-    allStates
+    allStates,
+    wall,
+    loginForm
   };
 };

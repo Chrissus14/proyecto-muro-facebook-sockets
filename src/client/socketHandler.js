@@ -1,13 +1,5 @@
 export default (socketClient, ui) => {
   socketClient.on('broadcastState', states => {
-    // console.log('broadcastState', data);
-    // ui.states.innerHTML += `
-    //   <div>
-    //     <p>${data.username} - ${data.text}</p>
-    //     <button onClick="window.ui.sendLike('${data.id}')">Like</button>
-    //     <button onClick="window.ui.sendDelete('${data.id}')">Delete</button>
-    //   </div>
-    // `;
     ui.states.innerHTML = '';
     states.forEach(item => {
       ui.states.innerHTML += `
@@ -19,5 +11,11 @@ export default (socketClient, ui) => {
         </div>
       `;
     });
+  });
+
+  socketClient.on('successLogin', token => {
+    ui.updateClientData(token);
+    ui.loginForm.style.display = 'none';
+    ui.wall.style.display = 'block';
   });
 };

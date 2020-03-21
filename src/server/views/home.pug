@@ -4,13 +4,21 @@ html
     meta(name="viewport", content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width")
   body
     h1 Facebook
-    div
-      input#username
-      button#change-username Change username
-    div#new-state
-      textarea#state-text(placeholder="Que estas pensando")
-      button#send-state Enviar
-    div#states
-    div#all-states
+    div#login
+      label(for="user") Username
+      input#user(placeholder="Ingresa tu nombre de usuario")
+      br
+      label(for="password") Password
+      input#password(type="password" placeholder="Ingresa tu contraseña")
+      button#do-login Login
+    div#wall
+      div
+        input#username
+        button#change-username Change username
+      div#new-state
+        textarea#state-text(placeholder="Que estas pensando")
+        button#send-state Enviar
+      div#states
+      div#all-states
     script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js")
     script(src="./js/main.js")
