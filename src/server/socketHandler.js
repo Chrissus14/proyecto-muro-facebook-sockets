@@ -1,7 +1,7 @@
 import connection from './connection';
 import { matchHash, createToken } from './hasher';
 
-export default (io, states) => socket => {
+export default (io, states, connection) => socket => {
   console.log('start sockets');
   let username = 'Anonymuos';
 
@@ -57,15 +57,41 @@ export default (io, states) => socket => {
 
   socket.on('sendLike', like => {
     const currentText = states.find(item => item.text === like.message);
-    currentText.likes += 1;
-    io.emit('broadcastState', states);
+    connection.query(
+      'SELECT likes FROM states WHERE text = ? AND userName = ?',
+      [currentText.text, currentText.username],
+      (err, result) => {
+        // console.log(currentText);
+        if (!err) {
+          connection.query(
+            'UPDATE states SET likes = likes + 1 WHERE text = ? AND userName = ?',
+            [currentText.text, currentText.username],
+            (err, result) => {
+              if (!err) {
+                currentText.likes += 1;
+                io.emit('broadcastState', states);
+              }
+            }
+          );
+        }
+      }
+    );
   });
 
   socket.on('deleteMsg', msg => {
     const currentText = states.find(item => item.text === msg.text);
-    if (socket.id === currentText.id) {
-      states = states.filter(item => item.text !== msg.text);
-      io.emit('broadcastState', states);
-    }
+    connection.query(
+      'UPDATE states SET status = ? WHERE text = ? AND userName = ?',
+      [msg.status, currentText.text, currentText.username],
+      (err, result) => {
+        // console.log(result);
+        states = states.filter(item => item.status === 1);
+        io.emit('broadcastState', states);
+        // if (socket.id === currentText.id) {
+        //   states = states.filter(item => item.status !== 0);
+        //   io.emit('broadcastState', states);
+        // }
+      }
+    );
   });
 };

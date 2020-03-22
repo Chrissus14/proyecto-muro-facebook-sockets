@@ -51,8 +51,8 @@ export default socketClient => {
   };
 
   const sendDelete = (id, text) => {
-    const msg = { id: id, text: text };
-    console.log(msg);
+    const msg = { id: id, text: text, status: 0 };
+    // console.log(msg);
     socketClient.emit('deleteMsg', msg);
   };
 
