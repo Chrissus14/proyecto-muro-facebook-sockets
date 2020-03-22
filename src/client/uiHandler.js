@@ -23,8 +23,12 @@ export default socketClient => {
   }
 
   sendState.addEventListener('click', () => {
-    console.log('sendState', stateText.value);
-    if (stateText.value.length > 0) socketClient.emit('sendState', stateText.value);
+    // console.log('sendState', stateText.value);
+    const data = {
+      stateText: stateText.value,
+      status: 1
+    };
+    if (data.stateText.length > 0) socketClient.emit('sendState', data);
   });
 
   doLogin.addEventListener('click', () => {

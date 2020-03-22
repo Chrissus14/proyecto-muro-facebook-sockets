@@ -30,16 +30,24 @@ export default (io, states) => socket => {
     });
   });
 
-  socket.on('sendState', text => {
-    console.log(text);
-    const data = {
-      text,
-      id: socket.id,
-      username,
-      likes: 0
-    };
-    states.push(data);
-    io.emit('broadcastState', states);
+  socket.on('sendState', data => {
+    console.log(data);
+    connection.query(
+      'INSERT INTO states (text, userName, status) VALUES (?, ? , ?)',
+      [data.stateText, username, data.status],
+      (err, result) => {
+        if (!err) {
+          const datos = {
+            text: data.stateText,
+            id: socket.id,
+            username,
+            likes: 0
+          };
+          states.push(datos);
+          io.emit('broadcastState', states);
+        }
+      }
+    );
   });
 
   socket.on('change_username', data => {
