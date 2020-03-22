@@ -14,6 +14,8 @@ app.set('view engine', 'pug');
 const io = socketio(server);
 
 let states = [];
+const activeUsers = [];
+let mostStatusUsers = [];
 
 io.set('transports', ['websockets', 'polling']);
 
@@ -27,10 +29,20 @@ connection.query('SELECT * FROM states WHERE status = 1 ORDER BY createdAt DESC'
       likes: item.likes
     };
   });
-  io.on('connection', socketHandler(io, states, connection));
+  connection.query(
+    'SELECT userName, COUNT(status) FROM states GROUP BY userName ORDER BY COUNT(status) DESC LIMIT 3',
+    (err, result) => {
+      mostStatusUsers = result.map(user => {
+        return {
+          username: user.username
+        };
+      });
+    }
+  );
+  io.on('connection', socketHandler(io, states, connection, activeUsers, mostStatusUsers));
 });
 
-// io.on('connection', socketHandler(io, states));
+// io.on('connection', socketHandler(io, states, connection, activeUsers, mostStatusUsers));
 
 app.get('/', (req, res) => {
   res.render('home');

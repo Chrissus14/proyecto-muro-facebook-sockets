@@ -18,4 +18,15 @@ export default (socketClient, ui) => {
     ui.loginForm.style.display = 'none';
     ui.wall.style.display = 'block';
   });
+
+  socketClient.on('statusUsers', mostStatusUsers => {
+    // ui.mostActiveUsers.innerHTML = '';
+    mostStatusUsers.forEach(user => {
+      ui.mostActiveUsers.innerHTML += `
+        <div>
+          <li>${user.username}</li>
+        </div>
+      `;
+    });
+  });
 };

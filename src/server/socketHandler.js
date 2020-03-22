@@ -1,14 +1,14 @@
 import connection from './connection';
 import { matchHash, createToken } from './hasher';
 
-export default (io, states, connection) => socket => {
+export default (io, states, connection, activeUsers, mostStatusUsers) => socket => {
   console.log('start sockets');
   let username = 'Anonymuos';
 
   if (states.length > 0) io.emit('broadcastState', states);
 
   socket.on('doLogin', data => {
-    console.log(data);
+    // console.log(data);
 
     connection.query('SELECT * FROM users WHERE userName = ?', [data.user], (err, result) => {
       if (!err) {
@@ -53,6 +53,13 @@ export default (io, states, connection) => socket => {
   socket.on('change_username', data => {
     // console.log(data.username);
     username = data.username;
+    if (!activeUsers.find(u => u.username === username || u.id === socket.id)) {
+      activeUsers.push({
+        id: socket.id,
+        username
+      });
+    }
+    // console.log(activeUsers);
   });
 
   socket.on('sendLike', like => {
@@ -80,17 +87,33 @@ export default (io, states, connection) => socket => {
 
   socket.on('deleteMsg', msg => {
     const currentText = states.find(item => item.text === msg.text);
+
     connection.query(
       'UPDATE states SET status = ? WHERE text = ? AND userName = ?',
       [msg.status, currentText.text, currentText.username],
       (err, result) => {
         // console.log(result);
-        states = states.filter(item => item.status === 1);
-        io.emit('broadcastState', states);
+        // states = states.filter(item => item.status === 0);
+        // io.emit('broadcastState', states);
         // if (socket.id === currentText.id) {
         //   states = states.filter(item => item.status !== 0);
         //   io.emit('broadcastState', states);
         // }
+      }
+    );
+  });
+
+  socket.on('sendMostStatusUsers', () => {
+    connection.query(
+      'SELECT userName, COUNT(status) FROM states GROUP BY userName ORDER BY COUNT(status) DESC LIMIT 3',
+      (err, result) => {
+        // console.log(result);
+        mostStatusUsers = result.map(user => {
+          return {
+            username: user.userName
+          };
+        });
+        io.emit('statusUsers', mostStatusUsers);
       }
     );
   });

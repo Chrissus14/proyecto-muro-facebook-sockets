@@ -10,6 +10,8 @@ export default socketClient => {
   const user = document.getElementById('user');
   const password = document.getElementById('password');
   const doLogin = document.getElementById('do-login');
+  const showUsers = document.getElementById('show-users');
+  const mostActiveUsers = document.getElementById('most-active-users');
 
   wall.style.display = 'none';
 
@@ -56,6 +58,10 @@ export default socketClient => {
     socketClient.emit('deleteMsg', msg);
   };
 
+  showUsers.addEventListener('click', () => {
+    socketClient.emit('sendMostStatusUsers');
+  });
+
   return {
     updateClientData,
     sendLike,
@@ -63,6 +69,8 @@ export default socketClient => {
     states,
     allStates,
     wall,
-    loginForm
+    loginForm,
+    showUsers,
+    mostActiveUsers
   };
 };
